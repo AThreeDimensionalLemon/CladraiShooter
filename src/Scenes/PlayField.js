@@ -28,7 +28,7 @@ class PlayField extends Phaser.Scene {
 
     create() {
         this.player = new Player(this);
-        this.bulletManager = new BulletManager();
+        this.bulletManager = new BulletManager(this);
     }
 
     update(time, delta) {
