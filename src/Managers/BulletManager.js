@@ -1,9 +1,6 @@
 class BulletManager extends Phaser.GameObjects.Group {
-    constructor() {
-        super({
-            name: "Bullets", 
-            maxSize: 50
-        });
+    constructor(scene) {
+        super();
 
         scene.add.existing(this);
         return this;
