@@ -13,7 +13,7 @@ class PlayField extends Phaser.Scene {
     }
 
     create() {
-        this.player = new Player(this, 400, 500);
+        this.player = new Player(this);
     }
 
     update(time, delta) {
