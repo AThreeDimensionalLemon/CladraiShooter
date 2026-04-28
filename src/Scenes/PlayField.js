@@ -1,6 +1,10 @@
 class PlayField extends Phaser.Scene {
     constructor() {
         super("playField");
+
+        this.config = {
+            spriteMargin: 25
+        }
     }
 
     preload() {
@@ -12,7 +16,7 @@ class PlayField extends Phaser.Scene {
         this.player = new Player(this, 400, 500);
     }
 
-    update() {
-
+    update(time, delta) {
+        this.player.update(delta)
     }
 }
