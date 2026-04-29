@@ -1,7 +1,13 @@
-class PlayerBullet extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, texture, frame) {
-        super(scene, x, y, texture);
+const speed = 500;
+
+class PlayerBullet extends Bullet {
+    constructor(scene, x, y) {
+        super(scene, x, y, "Laser_Player");
         scene.add.existing(this);
         return this;
+    }
+
+    update(delta) {
+        this.y -= speed / delta;
     }
 }

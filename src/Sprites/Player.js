@@ -16,11 +16,13 @@ class Player extends Phaser.GameObjects.Sprite {
         this.shieldRegenCooldown = playerConfigs.shieldRegenCooldown;
         this.laserCooldown = playerConfigs.laserCooldown;
 
+        this.bullets = [];
+
         this.aKey = scene.input.keyboard.addKey("A");
         this.dKey = scene.input.keyboard.addKey("D");
 
         scene.input.keyboard.addKey("SPACE").on('down', (key, event) => {
-            scene.playerBulletsGroup.get(this.x, this.y - this.height / 2, "Laser_Player");
+            this.bullets.push(new PlayerBullet(scene, this.x, this.y));
         });
 
         scene.add.existing(this);
@@ -34,6 +36,10 @@ class Player extends Phaser.GameObjects.Sprite {
 
         if (this.dKey.isDown && !this.aKey.isDown && this.x < game.config.width - (this.width / 2 + this.scene.config.spriteMargin)) {
             this.x += playerConfigs.speed / delta;
+        }
+
+        for (let bullet of this.bullets) {
+            bullet.update(delta);
         }
     }
 }
