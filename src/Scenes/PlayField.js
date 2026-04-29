@@ -27,11 +27,12 @@ class PlayField extends Phaser.Scene {
     }
 
     create() {
+        this.playerBulletsGroup = new PlayerBulletsGroup(this);
         this.player = new Player(this);
-        this.bulletManager = new BulletManager(this);
     }
 
     update(time, delta) {
+        this.playerBulletsGroup.update(delta);
         this.player.update(delta);
     }
 }

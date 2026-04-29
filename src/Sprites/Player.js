@@ -20,7 +20,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.dKey = scene.input.keyboard.addKey("D");
 
         scene.input.keyboard.addKey("SPACE").on('down', (key, event) => {
-            console.log("fire laser");
+            scene.playerBulletsGroup.get(this.x, this.y - this.height / 2, "Laser_Player");
         });
 
         scene.add.existing(this);
