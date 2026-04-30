@@ -1,13 +1,16 @@
 "use strict"
 
 let config = {
-    parent: 'phaser-game',
+    width: 800,
+    height: 1200,
     type: Phaser.CANVAS,
+    parent: 'phaser-game',
     render: {
         pixelArt: true  // prevent pixel art from getting blurred when scaled
     },
-    width: 800,
-    height: 600,
+    scale: {
+        mode: Phaser.Scale.ScaleModes.FIT
+    },
     scene: [PlayField]
 }
 
