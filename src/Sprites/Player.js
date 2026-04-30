@@ -22,7 +22,23 @@ class Player extends Phaser.GameObjects.Sprite {
         this.dKey = scene.input.keyboard.addKey("D");
 
         scene.input.keyboard.addKey("SPACE").on('down', (key, event) => {
-            this.bullets.push(new PlayerBullet(scene, this.x, this.y));
+            let hasInactive = false;
+            let inactiveIndex = 0;
+            for (; inactiveIndex < this.bullets.length; inactiveIndex++) {
+                if (!this.bullets[inactiveIndex].isActive) {
+                    hasInactive = true;
+                    break;
+                }
+            }
+            if (hasInactive) {
+                let bullet = this.bullets[inactiveIndex];
+                bullet.x = this.x;
+                bullet.y = this.y - this.height / 2;
+                bullet.isActive = true;
+                bullet.visible = true;
+            }
+            else this.bullets.push(new PlayerBullet(scene, this.x, this.y - this.height / 2));
+            console.log(this.bullets.length);
         });
 
         scene.add.existing(this);
