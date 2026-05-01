@@ -3,7 +3,8 @@ class PlayField extends Phaser.Scene {
         super("playField");
 
         this.config = {
-            spriteMargin: 25
+            spriteMargin: 25,
+            rowsAmount: 5
         }
     }
 
@@ -28,6 +29,28 @@ class PlayField extends Phaser.Scene {
 
     create() {
         this.player = new Player(this);
+
+        this.rows = [];
+        let enemyHeight = 84;
+        let spriteMargin = this.config.spriteMargin;
+        for (let row = 0; row < this.config.rowsAmount; row++) {
+            let newPath = this.add.path( //start point
+                spriteMargin + this.player.width / 2, //distance from side
+                spriteMargin + enemyHeight / 2 + //distance from top
+                (enemyHeight / 2 + spriteMargin * 4) * row //row offsets
+            );
+            newPath.lineTo( //end point
+                game.config.width - spriteMargin - this.player.width / 2, 
+                newPath.getStartPoint().y
+            );
+            this.rows.push(newPath);
+        }
+
+        // this.testEnemy = new Artillerist(this, this.rows[0]);
+        // this.testEnemy = new Artillerist(this, this.rows[1]);
+        // this.testEnemy = new Artillerist(this, this.rows[2]);
+        // this.testEnemy = new Artillerist(this, this.rows[3]);
+        // this.testEnemy = new Artillerist(this, this.rows[4]);
     }
 
     update(time, delta) {
