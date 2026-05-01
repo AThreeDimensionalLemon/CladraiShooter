@@ -2,8 +2,8 @@ const playerConfigs = { //configs for player instance
     maxShieldHealth: 3,
     maxHullHealth: 3,
     speed: 75,
-    shieldRegenCooldown: 5,
-    laserCooldown: 1
+    shieldRegenCooldown: 5000,
+    laserCooldown: 500
 }
 
 class Player extends Phaser.GameObjects.Sprite {
@@ -18,10 +18,24 @@ class Player extends Phaser.GameObjects.Sprite {
 
         this.bullets = [];
 
+        this.scene = scene;
         this.aKey = scene.input.keyboard.addKey("A");
         this.dKey = scene.input.keyboard.addKey("D");
+        this.spaceKey = scene.input.keyboard.addKey("SPACE")
 
-        scene.input.keyboard.addKey("SPACE").on('down', (key, event) => {
+        scene.add.existing(this);
+        return this;
+    }
+
+    update(delta) {
+        if (this.aKey.isDown && this.x > this.width / 2 + this.scene.config.spriteMargin) {
+            this.x -= playerConfigs.speed / delta;
+        }
+        if (this.dKey.isDown && this.x < game.config.width - (this.width / 2 + this.scene.config.spriteMargin)) {
+            this.x += playerConfigs.speed / delta;
+        }
+
+        if (this.spaceKey.isDown && this.laserCooldown <= 0) {
             let hasInactive = false;
             for (let i = 0; i < this.bullets.length; i++) {
                 if (!this.bullets[i].isActive) {
@@ -35,24 +49,14 @@ class Player extends Phaser.GameObjects.Sprite {
                     break;
                 }
             }
-            if (!hasInactive) this.bullets.push(new PlayerBullet(scene, this.x, this.y - this.height / 2));
-        });
-
-        scene.add.existing(this);
-        return this;
-    }
-
-    update(delta) {
-        if (this.aKey.isDown && !this.dKey.isDown && this.x > this.width / 2 + this.scene.config.spriteMargin) {
-            this.x -= playerConfigs.speed / delta;
-        }
-
-        if (this.dKey.isDown && !this.aKey.isDown && this.x < game.config.width - (this.width / 2 + this.scene.config.spriteMargin)) {
-            this.x += playerConfigs.speed / delta;
+            if (!hasInactive) this.bullets.push(new PlayerBullet(this.scene, this.x, this.y - this.height / 2));
+            this.laserCooldown = playerConfigs.laserCooldown;
         }
 
         for (let bullet of this.bullets) {
             bullet.update(delta);
         }
+
+        this.laserCooldown -= delta;
     }
 }
