@@ -1,42 +1,56 @@
-class Enemy extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, texture) {
-        super(scene, x, y, texture);
+class Enemy extends Phaser.GameObjects.PathFollower {
+    constructor(scene, path, texture) {
+        super(scene, path, 0, 0, texture);
         scene.add.existing(this);
         return this;
+    }
+
+    updatePosition(delta) {
+
+    }
+
+    updateFiring(delta) {
+
+    }
+
+    update(delta) {
+        this.updatePosition(delta);
+        this.updateFiring(delta);
     }
 }
 
 class Artillerist extends Enemy {
-    constructor(scene, x, y) {
-        super(scene, x, y, "Ship_Artillerist");
+    constructor(scene, path) {
+        super(scene, path, "Ship_Artillerist");
         return this;
     }
 }
 
 class Gunner extends Enemy {
-    constructor(scene, x, y) {
-        super(scene, x, y, "Ship_Gunner");
+    constructor(scene, path) {
+        super(scene, path, "Ship_Gunner");
         return this;
     }
 }
 
 class Medic extends Enemy {
-    constructor(scene, x, y) {
-        super(scene, x, y, "Ship_Medic");
+    constructor(scene, path) {
+        super(scene, path, "Ship_Medic");
         return this;
     }
 }
 
 class Runner extends Enemy {
     constructor(scene, x, y) {
-        super(scene, x, y, "Ship_Runner");
+        this.path = scene.add.path(x, y);
+        super(scene, this.path, 0, 0, "Ship_Runner");
         return this;
     }
 }
 
 class Wall extends Enemy {
-    constructor(scene, x, y) {
-        super(scene, x, y, "Ship_Wall");
+    constructor(scene, path) {
+        super(scene, path, "Ship_Wall");
         return this;
     }
 }
