@@ -8,17 +8,17 @@ class PlayField extends Phaser.Scene {
         }
 
         this.states = [
-            new StartState(this),
-            new TestState(this),
+            new IntermissionState(this),
             new PlayState(this),
-            new EndState(this)
+            new EndState(this),
+            new TestState(this)
         ]
-        this.state = this.states[1];
+        this.state = this.states[0];
     }
 
-    setState(inState, argument) {
+    setState(inState) {
         this.state = this.states[inState];
-        this.state.start(argument);
+        this.state.start();
     }
 
     preload() {
@@ -63,7 +63,7 @@ class PlayField extends Phaser.Scene {
     }
 
     update(time, delta) {
-        this.player.update(delta);
+        this.state.update(time, delta);
     }
 }
 
@@ -73,7 +73,7 @@ class PlayFieldState {
         return this;
     }
 
-    start(argument) { //I dunno if this'll ever be needed, but I'll leave it there anyway
+    start() {
         throw new Error("Method not implemented!");
     }
 
@@ -82,40 +82,45 @@ class PlayFieldState {
     }
 }
 
-class StartState extends PlayFieldState {
+const countdown = 3;
+class IntermissionState extends PlayFieldState {
     constructor(scene) {
         super(scene);
+
         return this;
     }
     
-    start(argument) {}
+    start() {
+        this.timeElapsed = 0;
+        this.timerTime = countdown;
 
-    update(time, delta) {
-        
-    }
-}
-
-class TestState extends PlayFieldState {
-    constructor(scene) {
-        super(scene);
-        return this;
-    }
-    
-    start(argument) {
-        this.scene.testEnemies = [];
-        for (let i = 0; i < this.scene.config.rowsAmount; i++) {
-            let newTestEnemy = new Artillerist(this.scene, this.scene.rows[i]);
-            this.scene.testEnemies.push(newTestEnemy);
-            this.scene.add.existing(newTestEnemy);
+        if (this.timer) {
+            this.timer.setText(countdown);
+            this.timer.visible = true;
+        }
+        else { //instantiated here because Phaser throws a fit when instantiated in PlayField's constructor
+            let config = game.config;
+            this.timer = new Phaser.GameObjects.Text(this.scene, config.width / 2, config.height / 2, this.timerTime, {
+                fontSize: 96,
+                color: "#ffffff"
+            });
+            this.scene.add.existing(this.timer);
         }
     }
 
     update(time, delta) {
-        
+        this.timeElapsed += delta / 1000;
+        if (this.timeElapsed >= 1) {
+            this.timerTime--;
+            this.timeElapsed = 0;
+            this.timer.setText(this.timerTime);
+            if (this.timerTime == 0) {
+                this.timer.visible = false;
+                this.scene.setState(1);
+            }
+        }
     }
 }
-
-
 
 class PlayState extends PlayFieldState {
     constructor(scene) {
@@ -123,7 +128,9 @@ class PlayState extends PlayFieldState {
         return this;
     }
     
-    start(argument) {}
+    start() {
+        console.log("PlayState active!");
+    }
 
     update(time, delta) {
         this.scene.player.update(delta);
@@ -137,7 +144,27 @@ class EndState extends PlayFieldState {
         return this;
     }
     
-    start(argument) {}
+    start() {}
+
+    update(time, delta) {
+        
+    }
+}
+
+class TestState extends PlayFieldState {
+    constructor(scene) {
+        super(scene);
+        return this;
+    }
+    
+    start() {
+        this.scene.testEnemies = [];
+        for (let i = 0; i < this.scene.config.rowsAmount; i++) {
+            let newTestEnemy = new Artillerist(this.scene, this.scene.rows[i]);
+            this.scene.testEnemies.push(newTestEnemy);
+            this.scene.add.existing(newTestEnemy);
+        }
+    }
 
     update(time, delta) {
         
