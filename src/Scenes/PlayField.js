@@ -6,6 +6,18 @@ class PlayField extends Phaser.Scene {
             spriteMargin: 25,
             rowsAmount: 5
         }
+
+        this.states = [
+            new StartState(this),
+            new PlayState(this),
+            new EndState(this)
+        ]
+        this.state = null;
+    }
+
+    setState(inState, argument) {
+        this.state = this.states[inState];
+        this.state.start(argument);
     }
 
     preload() {
@@ -55,5 +67,60 @@ class PlayField extends Phaser.Scene {
 
     update(time, delta) {
         this.player.update(delta);
+    }
+}
+
+class PlayFieldState {
+    constructor(scene) {
+        this.scene = scene;
+        return this;
+    }
+
+    start(argument) {
+        throw new Error("Method not implemented!");
+    }
+
+    update(time, delta) {
+        throw new Error("Method not implemented!");
+    }
+}
+
+class StartState extends PlayFieldState {
+    constructor(scene) {
+        super(scene);
+        return this;
+    }
+    
+    start(argument) {}
+
+    update(time, delta) {
+        
+    }
+}
+
+class PlayState extends PlayFieldState {
+    constructor(scene) {
+        super(scene);
+        return this;
+    }
+    
+    start(argument) {}
+
+    update(time, delta) {
+        this.scene.player.update(delta);
+        
+    }
+}
+
+class EndState extends PlayFieldState {
+    constructor(scene) {
+        super(scene);
+        return this;
+    }
+    
+    start(argument) {}
+
+    update(time, delta) {
+        
     }
 }
