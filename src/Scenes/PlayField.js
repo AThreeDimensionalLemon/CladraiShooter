@@ -9,10 +9,11 @@ class PlayField extends Phaser.Scene {
 
         this.states = [
             new StartState(this),
+            new TestState(this),
             new PlayState(this),
             new EndState(this)
         ]
-        this.state = null;
+        this.state = this.states[1];
     }
 
     setState(inState, argument) {
@@ -58,11 +59,7 @@ class PlayField extends Phaser.Scene {
             this.rows.push(newPath);
         }
 
-        // this.testEnemy = new Artillerist(this, this.rows[0]);
-        // this.testEnemy = new Artillerist(this, this.rows[1]);
-        // this.testEnemy = new Artillerist(this, this.rows[2]);
-        // this.testEnemy = new Artillerist(this, this.rows[3]);
-        // this.testEnemy = new Artillerist(this, this.rows[4]);
+        this.state.start();
     }
 
     update(time, delta) {
@@ -76,7 +73,7 @@ class PlayFieldState {
         return this;
     }
 
-    start(argument) {
+    start(argument) { //I dunno if this'll ever be needed, but I'll leave it there anyway
         throw new Error("Method not implemented!");
     }
 
@@ -97,6 +94,28 @@ class StartState extends PlayFieldState {
         
     }
 }
+
+class TestState extends PlayFieldState {
+    constructor(scene) {
+        super(scene);
+        return this;
+    }
+    
+    start(argument) {
+        this.scene.testEnemies = [];
+        for (let i = 0; i < this.scene.config.rowsAmount; i++) {
+            let newTestEnemy = new Artillerist(this.scene, this.scene.rows[i]);
+            this.scene.testEnemies.push(newTestEnemy);
+            this.scene.add.existing(newTestEnemy);
+        }
+    }
+
+    update(time, delta) {
+        
+    }
+}
+
+
 
 class PlayState extends PlayFieldState {
     constructor(scene) {
