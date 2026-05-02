@@ -14,11 +14,12 @@ class PlayField extends Phaser.Scene {
             new TestState(this)
         ]
         this.state = this.states[0];
+        this.currentWave = 0;
     }
 
-    setState(inState) {
+    setState(inState, argument) {
         this.state = this.states[inState];
-        this.state.start();
+        this.state.start(argument);
     }
 
     preload() {
@@ -38,6 +39,8 @@ class PlayField extends Phaser.Scene {
         this.load.image("Ship_Player");
         this.load.image("Ship_Runner");
         this.load.image("Ship_Wall");
+
+        this.load.json("Levels");
     }
 
     create() {
@@ -73,7 +76,7 @@ class PlayFieldState {
         return this;
     }
 
-    start() {
+    start(argument) {
         throw new Error("Method not implemented!");
     }
 
@@ -90,7 +93,7 @@ class IntermissionState extends PlayFieldState {
         return this;
     }
     
-    start() {
+    start(argument) {
         this.timeElapsed = 0;
         this.timerTime = countdown;
 
@@ -116,7 +119,7 @@ class IntermissionState extends PlayFieldState {
             this.timer.setText(this.timerTime);
             if (this.timerTime == 0) {
                 this.timer.visible = false;
-                this.scene.setState(1);
+                this.scene.setState(1, this.scene.currentWave);
             }
         }
     }
@@ -128,13 +131,12 @@ class PlayState extends PlayFieldState {
         return this;
     }
     
-    start() {
-        console.log("PlayState active!");
+    start(argument) {
+        let currentLevel = this.scene.cache.json.get("Levels")[argument];
     }
 
     update(time, delta) {
         this.scene.player.update(delta);
-        
     }
 }
 
@@ -144,7 +146,7 @@ class EndState extends PlayFieldState {
         return this;
     }
     
-    start() {}
+    start(argument) {}
 
     update(time, delta) {
         
@@ -157,7 +159,7 @@ class TestState extends PlayFieldState {
         return this;
     }
     
-    start() {
+    start(argument) {
         this.scene.testEnemies = [];
         for (let i = 0; i < this.scene.config.rowsAmount; i++) {
             let newTestEnemy = new Artillerist(this.scene, this.scene.rows[i]);
@@ -166,7 +168,5 @@ class TestState extends PlayFieldState {
         }
     }
 
-    update(time, delta) {
-        
-    }
+    update(time, delta) {}
 }
