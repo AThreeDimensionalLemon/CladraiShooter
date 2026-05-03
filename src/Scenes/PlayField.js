@@ -62,6 +62,8 @@ class PlayField extends Phaser.Scene {
             this.rows.push(newPath);
         }
 
+        this.enemies = [];
+
         this.state.start();
     }
 
@@ -132,7 +134,30 @@ class PlayState extends PlayFieldState {
     }
     
     start(argument) {
+        console.log("PlayState enabled");
         let currentLevel = this.scene.cache.json.get("Levels")[argument];
+        for (let row = 0; row < currentLevel.length; row++) {
+            let enemyAmount = currentLevel[row].length;
+            for (let enemy = 0; enemy < enemyAmount; enemy++) {
+                let defaultPathConfig = {
+                    from: (enemy / enemyAmount),
+                    to: ((enemy + 1) / enemyAmount),
+                    repeat: -1,
+                    yoyo: true
+                }
+                switch(currentLevel[row][enemy]) {
+                    case "A": console.log("Make Artillerist"); break;
+                    case "G": this.scene.enemies.push(new Gunner(this.scene, this.scene.rows[row], defaultPathConfig)); break;
+                    case "M": console.log("Make Medic"); break;
+                    case "R": console.log("Make Runner"); break;
+                    case "W": console.log("Make Wall"); break;
+                    default: throw new Error("Received invalid input");
+                }
+            }
+        }
+        for(let enemy of this.scene.enemies) {
+            enemy.startMotion();
+        }
     }
 
     update(time, delta) {

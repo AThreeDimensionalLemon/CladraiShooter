@@ -1,20 +1,33 @@
 class Enemy extends Phaser.GameObjects.PathFollower {
-    constructor(scene, path, texture) {
-        super(scene, path, 0, 0, texture);
+    constructor(scene, path, texture, pathConfig) {
+        super(
+            scene, 
+            path, 
+            path.getStartPoint().x, 
+            path.getStartPoint().y, 
+            texture
+        );
+        // super(
+        //     scene, 
+        //     path, 
+        //     path.getStartPoint().x + path.getLength() * pathConfig.from, 
+        //     path.getStartPoint().y, 
+        //     texture
+        // );
+        this.pathConfig = pathConfig;
         scene.add.existing(this);
         return this;
     }
 
-    updatePosition(delta) {
-
+    startMotion() {
+        this.startFollow(this.pathConfig);
     }
 
     updateFiring(delta) {
-
+        throw new Error("method not implemented!");
     }
 
     update(delta) {
-        this.updatePosition(delta);
         this.updateFiring(delta);
     }
 }
@@ -27,8 +40,8 @@ class Artillerist extends Enemy {
 }
 
 class Gunner extends Enemy {
-    constructor(scene, path) {
-        super(scene, path, "Ship_Gunner");
+    constructor(scene, path, moveConfig) {
+        super(scene, path, "Ship_Gunner", moveConfig);
         return this;
     }
 }
