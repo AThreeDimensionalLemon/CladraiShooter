@@ -2,7 +2,7 @@ class Enemy extends Phaser.GameObjects.PathFollower {
     constructor(scene, path, texture, pathConfig) {
         super(scene, path, path.getStartPoint().x, path.getStartPoint().y, texture);
         this.pathConfig = pathConfig;
-        this.firingCooldown = 2000 + Math.random() * 3000;
+        this.firingCooldown = 500 + Math.random() * 2500;
         scene.add.existing(this);
         return this;
     }
@@ -12,7 +12,12 @@ class Enemy extends Phaser.GameObjects.PathFollower {
     }
 
     updateFiring(delta) {
-
+        this.firingCooldown += -delta;
+        // console.log(this.firingCooldown);
+        if (this.firingCooldown <= 0) {
+            console.log("Fire laser");
+            this.firingCooldown = 500 + Math.random() * 2500;
+        }
     }
 
     updateRotation() {
@@ -21,7 +26,7 @@ class Enemy extends Phaser.GameObjects.PathFollower {
         this.setRotation(inAngle + (Math.PI / 2) * ((inAngle >= 0) ? -1 : 1));
     }
 
-    update(delta) {
+    update(time, delta) {
         this.updateFiring(delta);
         this.updateRotation();
     }
