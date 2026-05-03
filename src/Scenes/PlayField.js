@@ -149,7 +149,7 @@ class PlayState extends PlayFieldState {
                     yoyo: true
                 }
                 switch(currentLevel[row][enemy]) {
-                    case "A": console.log("Make Artillerist"); break;
+                    case "A": this.scene.enemies.push(new Artillerist(this.scene, this.scene.rows[row], defaultPathConfig)); break;
                     case "G": this.scene.enemies.push(new Gunner(this.scene, this.scene.rows[row], defaultPathConfig)); break;
                     case "M": console.log("Make Medic"); break;
                     case "R": console.log("Make Runner"); break;

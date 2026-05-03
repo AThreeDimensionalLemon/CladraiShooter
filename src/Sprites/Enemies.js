@@ -12,23 +12,27 @@ class Enemy extends Phaser.GameObjects.PathFollower {
         this.startFollow(this.pathConfig);
     }
 
+    fireBullet() {
+        let hasInactive = false;
+        for (let i = 0; i < this.bullets.length; i++) {
+            if (!this.bullets[i].isActive) {
+                let bullet = this.bullets[i];
+                bullet.x = this.x;
+                bullet.y = this.y - this.height / 2;
+                bullet.isActive = true;
+                bullet.visible = true;
+                
+                hasInactive = true;
+                break;
+            }
+        }
+        if (!hasInactive) this.bullets.push(new EnemyBullet(this.scene, this.x, this.y + this.height / 2, this.rotation));
+    }
+
     updateFiring(delta) {
         this.firingCooldown += -delta;
         if (this.firingCooldown <= 0) {
-            let hasInactive = false;
-            for (let i = 0; i < this.bullets.length; i++) {
-                if (!this.bullets[i].isActive) {
-                    let bullet = this.bullets[i];
-                    bullet.x = this.x;
-                    bullet.y = this.y - this.height / 2;
-                    bullet.isActive = true;
-                    bullet.visible = true;
-                    
-                    hasInactive = true;
-                    break;
-                }
-            }
-            if (!hasInactive) this.bullets.push(new EnemyBullet(this.scene, this.x, this.y + this.height / 2, this.rotation));
+            this.fireBullet();
             this.firingCooldown = 500 + Math.random() * 2500;
         }
     }
@@ -49,11 +53,30 @@ class Enemy extends Phaser.GameObjects.PathFollower {
     }
 }
 
+const burstInterval = 250;
 class Artillerist extends Enemy {
-    constructor(scene, path) {
-        super(scene, path, "Ship_Artillerist");
+    constructor(scene, path, moveConfig) {
+        super(scene, path, "Ship_Artillerist", moveConfig);
+        this.bursts = -1;
         return this;
     }
+
+    updateFiring(delta) {
+        this.firingCooldown += -delta;
+        if (this.firingCooldown <= 0) {
+            switch (this.bursts) {
+                case -1: //start burst
+                    this.bursts += Math.round(3 + Math.random() * 2);
+                    this.firingCooldown = burstInterval;
+                default:
+                    this.firingCooldown = (this.bursts == 0) ? 1000 + Math.random() * 2000 : burstInterval; //if end of burst, use actual firing cooldown rather than burst interval
+                    this.fireBullet();
+                    this.bursts--;
+            }
+        }
+    }
+
+    updateRotation() {}
 }
 
 class Gunner extends Enemy {
