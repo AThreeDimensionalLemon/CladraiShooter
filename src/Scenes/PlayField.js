@@ -139,9 +139,12 @@ class PlayState extends PlayFieldState {
         for (let row = 0; row < currentLevel.length; row++) {
             let enemyAmount = currentLevel[row].length;
             for (let enemy = 0; enemy < enemyAmount; enemy++) {
+                let begin = enemy / enemyAmount;
+                let end = (enemy + 1) / enemyAmount;
                 let defaultPathConfig = {
-                    from: (enemy / enemyAmount),
-                    to: ((enemy + 1) / enemyAmount),
+                    from: begin,
+                    to: end,
+                    duration: (end - begin) * 5000,
                     repeat: -1,
                     yoyo: true
                 }
@@ -162,6 +165,9 @@ class PlayState extends PlayFieldState {
 
     update(time, delta) {
         this.scene.player.update(delta);
+        for (let enemy of this.scene.enemies) {
+            enemy.update(time, delta);
+        }
     }
 }
 

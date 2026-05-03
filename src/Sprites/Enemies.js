@@ -1,19 +1,6 @@
 class Enemy extends Phaser.GameObjects.PathFollower {
     constructor(scene, path, texture, pathConfig) {
-        super(
-            scene, 
-            path, 
-            path.getStartPoint().x, 
-            path.getStartPoint().y, 
-            texture
-        );
-        // super(
-        //     scene, 
-        //     path, 
-        //     path.getStartPoint().x + path.getLength() * pathConfig.from, 
-        //     path.getStartPoint().y, 
-        //     texture
-        // );
+        super(scene, path, path.getStartPoint().x, path.getStartPoint().y, texture);
         this.pathConfig = pathConfig;
         scene.add.existing(this);
         return this;
@@ -27,8 +14,15 @@ class Enemy extends Phaser.GameObjects.PathFollower {
         throw new Error("method not implemented!");
     }
 
+    updateStopping() {
+        let rolled = Math.random();
+        // if (rolled < 0.025 && this.isFollowing()) this.pauseFollow();
+        // if (rolled > 0.95 && !this.isFollowing()) this.resumeFollow();
+    }
+
     update(delta) {
-        this.updateFiring(delta);
+        // this.updateFiring(delta);
+        this.updateStopping();
     }
 }
 
