@@ -3,6 +3,7 @@ class Enemy extends Phaser.GameObjects.PathFollower {
         super(scene, path, path.getStartPoint().x, path.getStartPoint().y, texture);
         this.pathConfig = pathConfig;
         this.firingCooldown = 500 + Math.random() * 2500;
+        this.bullets = [];
         scene.add.existing(this);
         return this;
     }
@@ -13,9 +14,21 @@ class Enemy extends Phaser.GameObjects.PathFollower {
 
     updateFiring(delta) {
         this.firingCooldown += -delta;
-        // console.log(this.firingCooldown);
         if (this.firingCooldown <= 0) {
-            console.log("Fire laser");
+            let hasInactive = false;
+            for (let i = 0; i < this.bullets.length; i++) {
+                if (!this.bullets[i].isActive) {
+                    let bullet = this.bullets[i];
+                    bullet.x = this.x;
+                    bullet.y = this.y - this.height / 2;
+                    bullet.isActive = true;
+                    bullet.visible = true;
+                    
+                    hasInactive = true;
+                    break;
+                }
+            }
+            if (!hasInactive) this.bullets.push(new EnemyBullet(this.scene, this.x, this.y + this.height / 2, this.rotation));
             this.firingCooldown = 500 + Math.random() * 2500;
         }
     }
@@ -29,6 +42,10 @@ class Enemy extends Phaser.GameObjects.PathFollower {
     update(time, delta) {
         this.updateFiring(delta);
         this.updateRotation();
+
+        for (let bullet of this.bullets) {
+            bullet.update(delta);
+        }
     }
 }
 
