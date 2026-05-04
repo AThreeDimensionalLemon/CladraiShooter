@@ -86,6 +86,7 @@ class PlayField extends Phaser.Scene {
         }
 
         this.state.start();
+        this.player.hardReset();
     }
 
     update(time, delta) {
@@ -133,6 +134,7 @@ class IntermissionState extends PlayFieldState {
             });
             this.scene.add.existing(this.timer);
         }
+        this.scene.player.reset();
     }
 
     update(time, delta) {
@@ -210,15 +212,30 @@ class PlayState extends PlayFieldState {
 class EndState extends PlayFieldState {
     constructor(scene) {
         super(scene);
+        this.endText;
         return this;
     }
     
     start(argument) {
-        this.scene.add.text(game.config.width / 2, game.config.height / 2, "Lose", {
+        if (this.endText == null) this.endText = this.scene.add.text(game.config.width / 2, game.config.height / 2, "Lose", {
             fontSize: 96,
             color: "#ffffff",
             align: "center"
         });
+        else this.endText.visible = true;
+        setTimeout(() => {
+            this.scene.player.hardReset();
+            this.scene.setState(0);
+            for (let enemy of this.scene.enemies) {
+                for (let bullet of enemy.bullets) {
+                    bullet.destroy();
+                }
+                enemy.destroy();
+            }
+            this.scene.currentWave = 0;
+            this.endText.visible = false;
+            this.scene.enemies = [];
+        }, 3000);
     }
 
     update(time, delta) {

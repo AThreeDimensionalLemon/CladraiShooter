@@ -6,6 +6,7 @@ const playerConfigs = { //configs for player instance
     laserCooldown: 500
 }
 
+//beginning to see why my professor said software engineering is a tradeoff between organization, performance, and shipping time, cuz this shit is not organized, nor performant, but damn it's amazing I managed to get this shipped in three days
 class Player extends Phaser.GameObjects.Sprite {
     constructor(scene) {
 
@@ -34,15 +35,6 @@ class Player extends Phaser.GameObjects.Sprite {
             scene.add.sprite(this.x, this.y, "Damage_2"),
             scene.add.sprite(this.x, this.y, "Damage_1")
         ];
-        for (let i = 0; i < playerConfigs.maxHullHealth; i++) {
-            let newUi = scene.add.sprite(scene.config.endHeights / 2 + 13 + i * 50, scene.footer.y, "Health_Hull");
-            newUi.setDepth(2);
-            this.hullBar.push(newUi);
-        }
-        for (let hullSprite of this.hullSprites) {
-            hullSprite.setDepth(1);
-            hullSprite.visible = false;
-        }
         this.hullDamageSound = scene.sound.add("DamageHull");
         this.deathSound = scene.sound.add("Death_Player");
 
@@ -53,18 +45,6 @@ class Player extends Phaser.GameObjects.Sprite {
             scene.add.sprite(this.x, this.y - 8, "Shield_2"),
             scene.add.sprite(this.x, this.y, "Shield_3"),
         ];
-        for (let i = 0; i < playerConfigs.maxShieldHealth; i++) {
-            let newUi = scene.add.sprite(scene.config.endHeights / 2 + 13 + i * 50, scene.footer.y, "Health_Shield");
-            newUi.setAlpha(0.75);
-            newUi.setScale(1.25);
-            newUi.setDepth(3);
-            this.shieldBar.push(newUi);
-        }
-        for (let shieldSprite of this.shieldSprites) {
-            shieldSprite.setDepth(2);
-            shieldSprite.visible = false;
-        }
-        this.shieldSprites[2].visible = true;
         this.shieldDownSound = scene.sound.add("Shield_Down");
         this.shieldUpSound = scene.sound.add("Shield_Up");
 
@@ -97,6 +77,50 @@ class Player extends Phaser.GameObjects.Sprite {
                 this.deathSound.play();
             }
         }
+    }
+
+    reset() {
+        console.log(this.shieldSprites);
+
+        //shield
+        for (let shieldPoint of this.shieldBar) {
+            shieldPoint.destroy();
+        }
+        this.shieldBar = [];
+        for (let i = 0; i < playerConfigs.maxShieldHealth; i++) {
+            //be a bit nicer if I didn't instantiatae a new sprite every time this is reset, but I'm running out of time, so this'll have to do
+            let newUi = this.scene.add.sprite(this.scene.config.endHeights / 2 + 13 + i * 50, this.scene.footer.y, "Health_Shield");
+            newUi.setAlpha(0.75);
+            newUi.setScale(1.25);
+            newUi.setDepth(3);
+            this.shieldBar.push(newUi);
+        }
+        for (let shieldSprite of this.shieldSprites) {
+            shieldSprite.setDepth(2);
+            shieldSprite.visible = false;
+        }
+        this.shieldSprites[2].visible = true;
+        this.shieldHealth = playerConfigs.maxShieldHealth;
+        this.shieldRegenCooldown = playerConfigs.shieldRegenCooldown;
+    }
+
+    hardReset() {
+
+        //hull
+        this.hullBar = [];
+        for (let i = 0; i < playerConfigs.maxHullHealth; i++) {
+            let newUi = this.scene.add.sprite(this.scene.config.endHeights / 2 + 13 + i * 50, this.scene.footer.y, "Health_Hull");
+            newUi.setDepth(2);
+            this.hullBar.push(newUi);
+        }
+        for (let hullSprite of this.hullSprites) {
+            hullSprite.setDepth(1);
+            hullSprite.visible = false;
+        }
+        this.visible = true;
+        this.isAlive = true;
+        this.hullHealth = playerConfigs.maxHullHealth;
+        this.reset();
     }
 
     update(delta) {
