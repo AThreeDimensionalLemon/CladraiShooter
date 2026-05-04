@@ -50,7 +50,6 @@ class Enemy extends Phaser.GameObjects.PathFollower {
     }
 
     update(time, delta) {
-        if (this.isDestroyed) return;
         this.updateFiring(delta);
         this.updateRotation();
 
@@ -143,8 +142,26 @@ class Runner extends Enemy { //Runner movement is too random for paves; will imp
 }
 
 class Wall extends Enemy {
-    constructor(scene, path) {
-        super(scene, path, "Ship_Wall");
+    constructor(scene, path, moveConfig) {
+        super(scene, path, "Ship_Wall", moveConfig);
+        this.hasShield = true;
+
+        let shieldSprite = scene.add.sprite(this.x, this.y + 15, "Shield_1");
+        shieldSprite.setRotation(Math.PI);
+        shieldSprite.setDepth(1);
+        this.shieldSprite = shieldSprite
         return this;
+    }
+
+    damage() {
+        if (this.hasShield == true) {
+            this.shieldSprite.visible = false;
+            this.hasShield = false;
+        }
+        else this.destroyRequested = true;
+    }
+
+    update(time, delta) {
+        this.shieldSprite.x = this.x;
     }
 }

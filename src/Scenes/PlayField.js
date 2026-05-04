@@ -165,7 +165,7 @@ class PlayState extends PlayFieldState {
                     case "G": this.scene.enemies.push(new Gunner(this.scene, this.scene.rows[row], defaultPathConfig)); break;
                     case "M": console.log("Make Medic"); break;
                     case "R": this.scene.enemies.push(new Runner(this.scene, this.scene.add.path(Math.random() * game.config.width, Math.random() * (game.config.height / 2)))); break;
-                    case "W": console.log("Make Wall"); break;
+                    case "W": this.scene.enemies.push(new Wall(this.scene, this.scene.rows[row], defaultPathConfig)); break;
                     default: throw new Error("Received invalid input");
                 }
             }
