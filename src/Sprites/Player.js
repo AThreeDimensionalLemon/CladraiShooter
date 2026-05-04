@@ -8,7 +8,9 @@ const playerConfigs = { //configs for player instance
 
 class Player extends Phaser.GameObjects.Sprite {
     constructor(scene) {
-        super(scene,  game.config.width / 2, game.config.height - (scene.config.spriteMargin + scene.config.endHeights), "Ship_Player");
+        let gameConfigs = game.config;
+
+        super(scene,  gameConfigs.width / 2, gameConfigs.height - (scene.config.spriteMargin + scene.config.endHeights), "Ship_Player");
         this.y -= this.height / 2;
 
         this.shieldHealth = playerConfigs.maxShieldHealth;
@@ -17,11 +19,26 @@ class Player extends Phaser.GameObjects.Sprite {
         this.laserCooldown = playerConfigs.laserCooldown;
 
         this.bullets = [];
+        this.hull = [];
+        this.shield = [];
 
         this.scene = scene;
         this.aKey = scene.input.keyboard.addKey("A");
         this.dKey = scene.input.keyboard.addKey("D");
         this.spaceKey = scene.input.keyboard.addKey("SPACE")
+
+        for (let i = 0; i < playerConfigs.maxHullHealth; i++) {
+            let newUi = scene.add.sprite(scene.config.endHeights / 2 + 13 + i * 50, scene.footer.y, "Health_Hull");
+            newUi.setDepth(2);
+            this.hull.push(newUi);
+        }
+        for (let i = 0; i < playerConfigs.maxShieldHealth; i++) {
+            let newUi = scene.add.sprite(scene.config.endHeights / 2 + 13 + i * 50, scene.footer.y, "Health_Shield");
+            newUi.setAlpha(0.75);
+            newUi.setScale(1.25);
+            newUi.setDepth(3);
+            this.hull.push(newUi);
+        }
 
         scene.add.existing(this);
         return this;

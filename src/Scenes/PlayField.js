@@ -45,6 +45,15 @@ class PlayField extends Phaser.Scene {
     }
 
     create() {
+
+        //header
+        this.header = this.add.rectangle(game.config.width / 2, this.config.endHeights / 2, game.config.width, this.config.endHeights, 0xff5e00);
+        this.header.setDepth(1);
+
+        //footer
+        this.footer = this.add.rectangle(game.config.width / 2, game.config.height - this.config.endHeights / 2, game.config.width, this.config.endHeights, 0xff5e00);
+        this.footer.setDepth(1);
+
         this.player = new Player(this);
 
         //enemy handling
@@ -65,12 +74,6 @@ class PlayField extends Phaser.Scene {
             );
             this.rows.push(newPath);
         }
-
-        //headers
-        this.header = this.add.rectangle(game.config.width / 2, this.config.endHeights / 2, game.config.width, this.config.endHeights, 0xff5e00);
-        this.header.setDepth(1);
-        this.footer = this.add.rectangle(game.config.width / 2, game.config.height - this.config.endHeights / 2, game.config.width, this.config.endHeights, 0xff5e00);
-        this.footer.setDepth(1);
 
         this.state.start();
     }
