@@ -28,6 +28,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
         //health
         //hull
+        this.isAlive = true;
         this.hullBar = [];
         this.hullSprites = [
             scene.add.sprite(this.x, this.y, "Damage_2"),
@@ -43,6 +44,7 @@ class Player extends Phaser.GameObjects.Sprite {
             hullSprite.visible = false;
         }
         this.hullDamageSound = scene.sound.add("DamageHull");
+        this.deathSound = scene.sound.add("Death_Player");
 
         //shield
         this.shieldBar = [];
@@ -90,7 +92,10 @@ class Player extends Phaser.GameObjects.Sprite {
             this.hullBar[this.hullHealth].visible = false;
             this.hullDamageSound.play();
             if (this.hullHealth > 0) this.hullSprites[this.hullHealth - 1].visible = true;
-            else console.log("player death");
+            else {
+                this.isAlive = false;
+                this.deathSound.play();
+            }
         }
     }
 

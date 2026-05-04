@@ -168,7 +168,10 @@ class Wall extends Enemy {
             this.shieldSprite.visible = false;
             this.hasShield = false;
         }
-        else this.destroyRequested = true;
+        else {
+            this.destroyRequested = true;
+            this.deathSound.play();
+        }
     }
 
     update(time, delta) {

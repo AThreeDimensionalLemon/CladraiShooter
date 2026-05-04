@@ -44,6 +44,7 @@ class PlayField extends Phaser.Scene {
         this.load.setPath("./assets/sounds");
         this.load.audio("DamageHull", "DamageHull.ogg");
         this.load.audio("Death_Enemy", "Death_Enemy.ogg");
+        this.load.audio("Death_Player", "Death_Player.ogg");
         this.load.audio("Laser_Enemy", "Laser_Enemy.ogg");
         this.load.audio("Laser_Player", "Laser_Player.ogg");
         this.load.audio("Shield_Down", "Shield_Down.ogg");
@@ -127,7 +128,8 @@ class IntermissionState extends PlayFieldState {
             let config = game.config;
             this.timer = new Phaser.GameObjects.Text(this.scene, config.width / 2, config.height / 2, this.timerTime, {
                 fontSize: 96,
-                color: "#ffffff"
+                color: "#ffffff",
+                align: "center"
             });
             this.scene.add.existing(this.timer);
         }
@@ -172,7 +174,7 @@ class PlayState extends PlayFieldState {
                 switch(levelJson[row][enemy]) {
                     case "A": this.scene.enemies.push(new Artillerist(this.scene, this.scene.rows[row], defaultPathConfig)); break;
                     case "G": this.scene.enemies.push(new Gunner(this.scene, this.scene.rows[row], defaultPathConfig)); break;
-                    case "M": console.log("Make Medic"); break;
+                    case "M": console.log("Make Medic"); break; //couldn't finish before deadline
                     case "R": this.scene.enemies.push(new Runner(this.scene, this.scene.add.path(Math.random() * game.config.width, Math.random() * (game.config.height / 2)))); break;
                     case "W": this.scene.enemies.push(new Wall(this.scene, this.scene.rows[row], defaultPathConfig)); break;
                     default: throw new Error("Received invalid input");
@@ -198,6 +200,10 @@ class PlayState extends PlayFieldState {
             }
             else enemy.update(time, delta);
         }
+        if (!this.scene.player.isAlive) {
+            this.scene.player.visible = false;
+            this.scene.setState(2);
+        }
     }
 }
 
@@ -207,7 +213,13 @@ class EndState extends PlayFieldState {
         return this;
     }
     
-    start(argument) {}
+    start(argument) {
+        this.scene.add.text(game.config.width / 2, game.config.height / 2, "Lose", {
+            fontSize: 96,
+            color: "#ffffff",
+            align: "center"
+        });
+    }
 
     update(time, delta) {
         
