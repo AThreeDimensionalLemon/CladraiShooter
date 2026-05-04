@@ -63,7 +63,6 @@ class Artillerist extends Enemy {
 
     updateFiring(delta) {
         this.firingCooldown += -delta;
-        console.log(this.bullets.length);
         if (this.firingCooldown <= 0) {
             switch (this.bursts) {
                 case -1: //start burst
