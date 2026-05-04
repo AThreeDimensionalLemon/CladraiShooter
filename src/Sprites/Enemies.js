@@ -1,5 +1,5 @@
 class Enemy extends Phaser.GameObjects.PathFollower {
-    constructor(scene, path, texture, pathConfig) {
+    constructor(scene, path, texture, pathConfig, score) {
         super(scene, path, path.getStartPoint().x, path.getStartPoint().y, texture);
         this.pathConfig = pathConfig;
 
@@ -9,6 +9,7 @@ class Enemy extends Phaser.GameObjects.PathFollower {
 
         this.destroyRequested = false;
         this.deathSound = scene.sound.add("Death_Enemy");
+        this.value = score;
 
         scene.add.existing(this);
         return this;
@@ -72,7 +73,7 @@ class Enemy extends Phaser.GameObjects.PathFollower {
 const artilleristBurstInterval = 250;
 class Artillerist extends Enemy {
     constructor(scene, path, moveConfig) {
-        super(scene, path, "Ship_Artillerist", moveConfig);
+        super(scene, path, "Ship_Artillerist", moveConfig, 2);
         this.bursts = -1;
         return this;
     }
@@ -97,7 +98,7 @@ class Artillerist extends Enemy {
 
 class Gunner extends Enemy {
     constructor(scene, path, moveConfig) {
-        super(scene, path, "Ship_Gunner", moveConfig);
+        super(scene, path, "Ship_Gunner", moveConfig, 1);
         return this;
     }
 }
@@ -115,7 +116,7 @@ const runnerConfig = {
 }
 class Runner extends Enemy { //Runner movement is too random for paves; will implement pixel-based movement instead
     constructor(scene, path) {
-        super(scene, path, "Ship_Runner", null);
+        super(scene, path, "Ship_Runner", null, 3);
         this.followPointTimer = Math.random() * runnerConfig.newPointMaxTime;
         this.followPoint = {
             x: Math.random() * game.config.width,
@@ -153,7 +154,7 @@ class Runner extends Enemy { //Runner movement is too random for paves; will imp
 
 class Wall extends Enemy {
     constructor(scene, path, moveConfig) {
-        super(scene, path, "Ship_Wall", moveConfig);
+        super(scene, path, "Ship_Wall", moveConfig, 1);
         this.hasShield = true;
 
         let shieldSprite = scene.add.sprite(this.x, this.y + 15, "Shield_1");

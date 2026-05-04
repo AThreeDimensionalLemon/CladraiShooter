@@ -85,6 +85,15 @@ class PlayField extends Phaser.Scene {
             this.rows.push(newPath);
         }
 
+        //scores
+        this.score = 0;
+        this.scoreboard = this.add.text(game.config.width / 2, this.header.y, this.score, {
+            fontSize: 48,
+            align: "center",
+            
+        });
+        this.scoreboard.setDepth(2);
+
         this.state.start();
         this.player.hardReset();
     }
@@ -193,6 +202,7 @@ class PlayState extends PlayFieldState {
         for (let i = 0; i < this.scene.enemies.length; i++) {
             let enemy = this.scene.enemies[i];
             if (enemy.destroyRequested) { //Enemy freaks out if I don't put this here
+                this.scene.score += enemy.value;
                 enemy.destroy();
                 this.scene.enemies.splice(i, 1);
                 if (this.scene.enemies.length <= 0) {
@@ -206,6 +216,7 @@ class PlayState extends PlayFieldState {
             this.scene.player.visible = false;
             this.scene.setState(2);
         }
+        this.scene.scoreboard.setText(this.scene.score);
     }
 }
 
@@ -217,7 +228,7 @@ class EndState extends PlayFieldState {
     }
     
     start(argument) {
-        if (this.endText == null) this.endText = this.scene.add.text(game.config.width / 2, game.config.height / 2, "Lose", {
+        if (this.endText == null) this.endText = this.scene.add.text(0, game.config.height / 2, "Lose\nFinal score:\n" + this.scene.score, {
             fontSize: 96,
             color: "#ffffff",
             align: "center"
@@ -236,6 +247,8 @@ class EndState extends PlayFieldState {
             this.endText.visible = false;
             this.scene.enemies = [];
         }, 3000);
+        this.scene.score = 0;
+        this.scene.scoreboard.setText(0);
     }
 
     update(time, delta) {

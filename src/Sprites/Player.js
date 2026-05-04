@@ -80,7 +80,6 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     reset() {
-        console.log(this.shieldSprites);
 
         //shield
         for (let shieldPoint of this.shieldBar) {
