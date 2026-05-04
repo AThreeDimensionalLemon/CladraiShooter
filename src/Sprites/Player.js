@@ -19,15 +19,15 @@ class Player extends Phaser.GameObjects.Sprite {
         this.laserCooldown = playerConfigs.laserCooldown;
 
         this.bullets = [];
-        this.hull = [];
+        this.hullBar = [];
         this.hullSprites = [
-            scene.add.sprite(this.x, this.y, "Damage_1"),
-            scene.add.sprite(this.x, this.y, "Damage_2")
+            scene.add.sprite(this.x, this.y, "Damage_2"),
+            scene.add.sprite(this.x, this.y, "Damage_1")
         ];
-        this.shield = [];
+        this.shieldBar = [];
         this.shieldSprites = [
-            scene.add.sprite(this.x, this.y, "Shield_1"),
-            scene.add.sprite(this.x, this.y, "Shield_2"),
+            scene.add.sprite(this.x, this.y - 5, "Shield_1"),
+            scene.add.sprite(this.x, this.y - 8, "Shield_2"),
             scene.add.sprite(this.x, this.y, "Shield_3"),
         ];
 
@@ -39,7 +39,7 @@ class Player extends Phaser.GameObjects.Sprite {
         for (let i = 0; i < playerConfigs.maxHullHealth; i++) {
             let newUi = scene.add.sprite(scene.config.endHeights / 2 + 13 + i * 50, scene.footer.y, "Health_Hull");
             newUi.setDepth(2);
-            this.hull.push(newUi);
+            this.hullBar.push(newUi);
         }
         for (let hullSprite of this.hullSprites) {
             hullSprite.setDepth(1);
@@ -50,7 +50,7 @@ class Player extends Phaser.GameObjects.Sprite {
             newUi.setAlpha(0.75);
             newUi.setScale(1.25);
             newUi.setDepth(3);
-            this.hull.push(newUi);
+            this.shieldBar.push(newUi);
         }
         for (let shieldSprite of this.shieldSprites) {
             shieldSprite.setDepth(2);
@@ -63,7 +63,19 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     damage() {
-        console.log("lose health");
+        if (this.shieldHealth > 0) {
+            this.shieldHealth--;
+            console.log(this.shieldHealth);
+            this.shieldBar[this.shieldHealth].visible = false;
+            this.shieldSprites[this.shieldHealth].visible = false;
+            if (!this.shieldHealth <= 0) this.shieldSprites[this.shieldHealth - 1].visible = true;
+        }
+        else {
+            this.hullHealth--;
+            this.hullBar[this.hullHealth].visible = false;
+            if (this.hullHealth > 0) this.hullSprites[this.hullHealth - 1].visible = true;
+            else console.log("player death");
+        }
     }
 
     update(delta) {
