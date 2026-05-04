@@ -1,4 +1,4 @@
-const speed = 500;
+const bulletSpeed = 500;
 
 class Bullet extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, texture) {
@@ -16,7 +16,7 @@ class PlayerBullet extends Bullet {
 
     update(delta) {
         if (this.isActive) {
-            this.y -= speed / delta;
+            this.y -= bulletSpeed / delta;
             if (this.y < -this.height / 2) this.isActive = false;
         }
     }
@@ -31,7 +31,7 @@ class EnemyBullet extends Bullet {
 
     update(delta) {
         if (this.isActive) {
-            let hypotenuse = speed / delta;
+            let hypotenuse = bulletSpeed / delta;
             let inAngle = this.rotation;
             this.x -= hypotenuse * Math.sin(this.rotation);
             this.y += hypotenuse * Math.cos(this.rotation);

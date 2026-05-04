@@ -19,6 +19,7 @@ class Enemy extends Phaser.GameObjects.PathFollower {
                 let bullet = this.bullets[i];
                 bullet.x = this.x;
                 bullet.y = this.y + this.height / 2;
+                bullet.setRotation(this.rotation);
                 bullet.isActive = true;
                 bullet.visible = true;
                 
@@ -93,11 +94,40 @@ class Medic extends Enemy {
     }
 }
 
-class Runner extends Enemy {
-    constructor(scene, x, y) {
-        this.path = scene.add.path(x, y);
-        super(scene, this.path, 0, 0, "Ship_Runner");
+class Runner extends Enemy { //Runner movement is too random for paves; will implement pixel-based movement instead
+    constructor(scene, path) {
+        super(scene, path, "Ship_Runner", null);
+        this.followPointTimer = Math.random() * 3000;
+        this.followPoint = {
+            x: Math.random() * game.config.width,
+            y: Math.random() * (game.config.height / 2)
+        }
         return this;
+    }
+
+    startMotion() {}
+
+    update(time, delta) {
+        this.updateFiring(delta);
+        this.updateRotation();
+
+        for (let bullet of this.bullets) {
+            bullet.update(delta);
+        }
+
+        //movement code
+        this.followPointTimer -= delta;
+        if (this.followPointTimer >= 0) {
+            if (Math.abs(this.x - this.followPoint.x) > 100) this.x += 100 / delta * ((this.x < this.followPoint.x) ? 1 : -1);
+            if (Math.abs(this.y - this.followPoint.y) > 100) this.y += 100 / delta * ((this.y < this.followPoint.y) ? 1 : -1);
+        }
+        else {
+            this.followPoint = {
+                x: Math.random() * game.config.width,
+                y: Math.random() * game.config.height / 2
+            }
+            this.followPointTimer = Math.random() * 1000;
+        }
     }
 }
 

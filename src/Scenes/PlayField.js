@@ -4,7 +4,7 @@ class PlayField extends Phaser.Scene {
 
         this.config = {
             spriteMargin: 25,
-            rowsAmount: 5
+            rowsAmount: 6 //sixth row should be used for runners
         }
 
         this.states = [
@@ -152,7 +152,7 @@ class PlayState extends PlayFieldState {
                     case "A": this.scene.enemies.push(new Artillerist(this.scene, this.scene.rows[row], defaultPathConfig)); break;
                     case "G": this.scene.enemies.push(new Gunner(this.scene, this.scene.rows[row], defaultPathConfig)); break;
                     case "M": console.log("Make Medic"); break;
-                    case "R": console.log("Make Runner"); break;
+                    case "R": this.scene.enemies.push(new Runner(this.scene, this.scene.add.path(Math.random() * game.config.width, Math.random() * (game.config.height / 2)))); break;
                     case "W": console.log("Make Wall"); break;
                     default: throw new Error("Received invalid input");
                 }
