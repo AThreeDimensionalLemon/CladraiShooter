@@ -20,7 +20,16 @@ class Player extends Phaser.GameObjects.Sprite {
 
         this.bullets = [];
         this.hull = [];
+        this.hullSprites = [
+            scene.add.sprite(this.x, this.y, "Damage_1"),
+            scene.add.sprite(this.x, this.y, "Damage_2")
+        ];
         this.shield = [];
+        this.shieldSprites = [
+            scene.add.sprite(this.x, this.y, "Shield_1"),
+            scene.add.sprite(this.x, this.y, "Shield_2"),
+            scene.add.sprite(this.x, this.y, "Shield_3"),
+        ];
 
         this.scene = scene;
         this.aKey = scene.input.keyboard.addKey("A");
@@ -32,6 +41,10 @@ class Player extends Phaser.GameObjects.Sprite {
             newUi.setDepth(2);
             this.hull.push(newUi);
         }
+        for (let hullSprite of this.hullSprites) {
+            hullSprite.setDepth(1);
+            hullSprite.visible = false;
+        }
         for (let i = 0; i < playerConfigs.maxShieldHealth; i++) {
             let newUi = scene.add.sprite(scene.config.endHeights / 2 + 13 + i * 50, scene.footer.y, "Health_Shield");
             newUi.setAlpha(0.75);
@@ -39,9 +52,18 @@ class Player extends Phaser.GameObjects.Sprite {
             newUi.setDepth(3);
             this.hull.push(newUi);
         }
+        for (let shieldSprite of this.shieldSprites) {
+            shieldSprite.setDepth(2);
+            shieldSprite.visible = false;
+        }
+        this.shieldSprites[2].visible = true;
 
         scene.add.existing(this);
         return this;
+    }
+
+    damage() {
+        console.log("lose health");
     }
 
     update(delta) {
@@ -72,6 +94,13 @@ class Player extends Phaser.GameObjects.Sprite {
 
         for (let bullet of this.bullets) {
             bullet.update(delta);
+        }
+
+        for (let damage of this.hullSprites) {
+            damage.x = this.x;
+        }
+        for (let shield of this.shieldSprites) {
+            shield.x = this.x;
         }
 
         this.laserCooldown -= delta;

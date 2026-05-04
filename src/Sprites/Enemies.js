@@ -12,6 +12,10 @@ class Enemy extends Phaser.GameObjects.PathFollower {
         this.startFollow(this.pathConfig);
     }
 
+    damage() {
+        console.log("die");
+    }
+
     fireBullet() {
         let hasInactive = false;
         for (let i = 0; i < this.bullets.length; i++) {

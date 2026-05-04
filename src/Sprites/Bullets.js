@@ -17,7 +17,7 @@ class Bullet extends Phaser.GameObjects.Sprite {
         let isAbove = bottomEdge(this) < topEdge(target);
         let isBelow = topEdge(this) > bottomEdge(target);
         if (!(isOnRight || isOnLeft || isAbove || isBelow)) {
-            // target.damage();
+            target.damage();
             this.isActive = false;
             this.visible = false;
         }
