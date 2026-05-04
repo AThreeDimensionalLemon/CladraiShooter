@@ -141,13 +141,15 @@ class IntermissionState extends PlayFieldState {
 class PlayState extends PlayFieldState {
     constructor(scene) {
         super(scene);
+        this.currentLevel;
         return this;
     }
     
     start(argument) {
-        let currentLevel = this.scene.cache.json.get("Levels")[argument];
-        for (let row = 0; row < currentLevel.length; row++) {
-            let enemyAmount = currentLevel[row].length;
+        this.currentLevel = argument;
+        let levelJson = this.scene.cache.json.get("Levels")[argument];
+        for (let row = 0; row < levelJson.length; row++) {
+            let enemyAmount = levelJson[row].length;
             for (let enemy = 0; enemy < enemyAmount; enemy++) {
                 let begin = enemy / enemyAmount;
                 let end = (enemy + 1) / enemyAmount;
@@ -158,7 +160,7 @@ class PlayState extends PlayFieldState {
                     repeat: -1,
                     yoyo: true
                 }
-                switch(currentLevel[row][enemy]) {
+                switch(levelJson[row][enemy]) {
                     case "A": this.scene.enemies.push(new Artillerist(this.scene, this.scene.rows[row], defaultPathConfig)); break;
                     case "G": this.scene.enemies.push(new Gunner(this.scene, this.scene.rows[row], defaultPathConfig)); break;
                     case "M": console.log("Make Medic"); break;
@@ -175,13 +177,15 @@ class PlayState extends PlayFieldState {
 
     update(time, delta) {
         this.scene.player.update(delta);
-        // for (let enemy of this.scene.enemies) {
         for (let i = 0; i < this.scene.enemies.length; i++) {
             let enemy = this.scene.enemies[i];
             if (enemy.destroyRequested) { //Enemy freaks out if I don't put this here
                 enemy.destroy();
                 this.scene.enemies.splice(i, 1);
-                console.log(this.scene.enemies);
+                if (this.scene.enemies.length <= 0) {
+                    this.scene.currentWave++;
+                    this.scene.setState(0);
+                }
             }
             else enemy.update(time, delta);
         }
