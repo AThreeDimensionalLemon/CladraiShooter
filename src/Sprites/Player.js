@@ -1,41 +1,37 @@
 const playerConfigs = { //configs for player instance
     maxShieldHealth: 3,
     maxHullHealth: 3,
-    speed: 75,
-    shieldRegenCooldown: 5000,
+    speed: 150,
+    shieldRegenCooldown: 2000,
     laserCooldown: 500
 }
 
 class Player extends Phaser.GameObjects.Sprite {
     constructor(scene) {
+
+        //useful constants
         let gameConfigs = game.config;
 
+        //initialization
         super(scene,  gameConfigs.width / 2, gameConfigs.height - (scene.config.spriteMargin + scene.config.endHeights), "Ship_Player");
         this.y -= this.height / 2;
 
+        //object variables
         this.shieldHealth = playerConfigs.maxShieldHealth;
         this.hullHealth = playerConfigs.maxHullHealth;
         this.shieldRegenCooldown = playerConfigs.shieldRegenCooldown;
         this.laserCooldown = playerConfigs.laserCooldown;
 
+        //bullets
         this.bullets = [];
+
+        //health
+        //hull
         this.hullBar = [];
         this.hullSprites = [
             scene.add.sprite(this.x, this.y, "Damage_2"),
             scene.add.sprite(this.x, this.y, "Damage_1")
         ];
-        this.shieldBar = [];
-        this.shieldSprites = [
-            scene.add.sprite(this.x, this.y - 5, "Shield_1"),
-            scene.add.sprite(this.x, this.y - 8, "Shield_2"),
-            scene.add.sprite(this.x, this.y, "Shield_3"),
-        ];
-
-        this.scene = scene;
-        this.aKey = scene.input.keyboard.addKey("A");
-        this.dKey = scene.input.keyboard.addKey("D");
-        this.spaceKey = scene.input.keyboard.addKey("SPACE")
-
         for (let i = 0; i < playerConfigs.maxHullHealth; i++) {
             let newUi = scene.add.sprite(scene.config.endHeights / 2 + 13 + i * 50, scene.footer.y, "Health_Hull");
             newUi.setDepth(2);
@@ -45,6 +41,14 @@ class Player extends Phaser.GameObjects.Sprite {
             hullSprite.setDepth(1);
             hullSprite.visible = false;
         }
+
+        //shield
+        this.shieldBar = [];
+        this.shieldSprites = [
+            scene.add.sprite(this.x, this.y - 5, "Shield_1"),
+            scene.add.sprite(this.x, this.y - 8, "Shield_2"),
+            scene.add.sprite(this.x, this.y, "Shield_3"),
+        ];
         for (let i = 0; i < playerConfigs.maxShieldHealth; i++) {
             let newUi = scene.add.sprite(scene.config.endHeights / 2 + 13 + i * 50, scene.footer.y, "Health_Shield");
             newUi.setAlpha(0.75);
@@ -58,6 +62,13 @@ class Player extends Phaser.GameObjects.Sprite {
         }
         this.shieldSprites[2].visible = true;
 
+        //other stuff
+        this.scene = scene;
+        this.aKey = scene.input.keyboard.addKey("A");
+        this.dKey = scene.input.keyboard.addKey("D");
+        this.spaceKey = scene.input.keyboard.addKey("SPACE")
+
+        //finalize
         scene.add.existing(this);
         return this;
     }
@@ -65,7 +76,6 @@ class Player extends Phaser.GameObjects.Sprite {
     damage() {
         if (this.shieldHealth > 0) {
             this.shieldHealth--;
-            console.log(this.shieldHealth);
             this.shieldBar[this.shieldHealth].visible = false;
             this.shieldSprites[this.shieldHealth].visible = false;
             if (!this.shieldHealth <= 0) this.shieldSprites[this.shieldHealth - 1].visible = true;
@@ -113,6 +123,19 @@ class Player extends Phaser.GameObjects.Sprite {
         }
         for (let shield of this.shieldSprites) {
             shield.x = this.x;
+        }
+
+        if (this.shieldHealth < playerConfigs.maxShieldHealth && this.shieldRegenCooldown > 0) {
+            console.log(this.shieldRegenCooldown);
+            this.shieldRegenCooldown -= delta;
+        }
+        if (this.shieldRegenCooldown <= 0) {
+            console.log("shield regenerated!");
+            this.shieldHealth++;
+            this.shieldBar[this.shieldHealth - 1].visible = true;
+            if (this.shieldHealth > 1) this.shieldSprites[this.shieldHealth - 2].visible = false;
+            this.shieldSprites[this.shieldHealth - 1].visible = true;
+            this.shieldRegenCooldown = playerConfigs.shieldRegenCooldown;
         }
 
         this.laserCooldown -= delta;
