@@ -18,7 +18,7 @@ class Enemy extends Phaser.GameObjects.PathFollower {
             if (!this.bullets[i].isActive) {
                 let bullet = this.bullets[i];
                 bullet.x = this.x;
-                bullet.y = this.y - this.height / 2;
+                bullet.y = this.y + this.height / 2;
                 bullet.isActive = true;
                 bullet.visible = true;
                 
@@ -63,6 +63,7 @@ class Artillerist extends Enemy {
 
     updateFiring(delta) {
         this.firingCooldown += -delta;
+        console.log(this.bullets.length);
         if (this.firingCooldown <= 0) {
             switch (this.bursts) {
                 case -1: //start burst

@@ -35,6 +35,7 @@ class EnemyBullet extends Bullet {
             let inAngle = this.rotation;
             this.x -= hypotenuse * Math.sin(this.rotation);
             this.y += hypotenuse * Math.cos(this.rotation);
+            if (this.y - this.height > game.config.height) this.isActive = false;
         }
     }
 }
