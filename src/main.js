@@ -2,7 +2,7 @@
 
 let config = {
     width: 800,
-    height: 1200,
+    height: 1250,
     type: Phaser.CANVAS,
     parent: 'phaser-game',
     render: {

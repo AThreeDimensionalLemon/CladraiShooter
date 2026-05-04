@@ -4,6 +4,7 @@ class PlayField extends Phaser.Scene {
 
         this.config = {
             spriteMargin: 25,
+            endHeights: game.config.height / 12,
             rowsAmount: 6 //sixth row should be used for runners
         }
 
@@ -46,13 +47,16 @@ class PlayField extends Phaser.Scene {
     create() {
         this.player = new Player(this);
 
+        //enemy handling
         this.rows = [];
+        this.enemies = [];
         let enemyHeight = 84;
         let spriteMargin = this.config.spriteMargin;
+        let headerMargin = spriteMargin + this.config.endHeights;
         for (let row = 0; row < this.config.rowsAmount; row++) {
             let newPath = this.add.path( //start point
                 spriteMargin + this.player.width / 2, //distance from side
-                spriteMargin + enemyHeight / 2 + //distance from top
+                headerMargin + enemyHeight / 2 + //distance from top
                 (enemyHeight / 2 + spriteMargin * 4) * row //row offsets
             );
             newPath.lineTo( //end point
@@ -62,7 +66,11 @@ class PlayField extends Phaser.Scene {
             this.rows.push(newPath);
         }
 
-        this.enemies = [];
+        //headers
+        this.header = this.add.rectangle(game.config.width / 2, this.config.endHeights / 2, game.config.width, this.config.endHeights, 0xff5e00);
+        this.header.setDepth(1);
+        this.footer = this.add.rectangle(game.config.width / 2, game.config.height - this.config.endHeights / 2, game.config.width, this.config.endHeights, 0xff5e00);
+        this.footer.setDepth(1);
 
         this.state.start();
     }

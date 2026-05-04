@@ -8,7 +8,7 @@ const playerConfigs = { //configs for player instance
 
 class Player extends Phaser.GameObjects.Sprite {
     constructor(scene) {
-        super(scene,  game.config.width / 2, game.config.height - scene.config.spriteMargin, "Ship_Player");
+        super(scene,  game.config.width / 2, game.config.height - (scene.config.spriteMargin + scene.config.endHeights), "Ship_Player");
         this.y -= this.height / 2;
 
         this.shieldHealth = playerConfigs.maxShieldHealth;
