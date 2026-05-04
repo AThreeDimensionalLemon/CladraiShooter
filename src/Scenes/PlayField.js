@@ -134,7 +134,6 @@ class PlayState extends PlayFieldState {
     }
     
     start(argument) {
-        console.log("PlayState enabled");
         let currentLevel = this.scene.cache.json.get("Levels")[argument];
         for (let row = 0; row < currentLevel.length; row++) {
             let enemyAmount = currentLevel[row].length;
