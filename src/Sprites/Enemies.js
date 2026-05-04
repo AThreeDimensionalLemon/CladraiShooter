@@ -20,6 +20,9 @@ class Enemy extends Phaser.GameObjects.PathFollower {
 
     damage() {
         this.destroyRequested = true;
+        for (let bullet of this.bullets) {
+            bullet.destroy();
+        }
         this.deathSound.play();
     }
 
