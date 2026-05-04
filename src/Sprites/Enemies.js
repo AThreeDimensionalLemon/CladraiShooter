@@ -4,6 +4,7 @@ class Enemy extends Phaser.GameObjects.PathFollower {
         this.pathConfig = pathConfig;
         this.firingCooldown = 500 + Math.random() * 2500;
         this.bullets = [];
+        this.destroyRequested = false;
         scene.add.existing(this);
         return this;
     }
@@ -13,7 +14,7 @@ class Enemy extends Phaser.GameObjects.PathFollower {
     }
 
     damage() {
-        console.log("die");
+        this.destroyRequested = true;
     }
 
     fireBullet() {
@@ -49,6 +50,7 @@ class Enemy extends Phaser.GameObjects.PathFollower {
     }
 
     update(time, delta) {
+        if (this.isDestroyed) return;
         this.updateFiring(delta);
         this.updateRotation();
 

@@ -175,8 +175,15 @@ class PlayState extends PlayFieldState {
 
     update(time, delta) {
         this.scene.player.update(delta);
-        for (let enemy of this.scene.enemies) {
-            enemy.update(time, delta);
+        // for (let enemy of this.scene.enemies) {
+        for (let i = 0; i < this.scene.enemies.length; i++) {
+            let enemy = this.scene.enemies[i];
+            if (enemy.destroyRequested) { //Enemy freaks out if I don't put this here
+                enemy.destroy();
+                this.scene.enemies.splice(i, 1);
+                console.log(this.scene.enemies);
+            }
+            else enemy.update(time, delta);
         }
     }
 }

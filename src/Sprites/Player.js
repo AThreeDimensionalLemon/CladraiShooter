@@ -125,12 +125,8 @@ class Player extends Phaser.GameObjects.Sprite {
             shield.x = this.x;
         }
 
-        if (this.shieldHealth < playerConfigs.maxShieldHealth && this.shieldRegenCooldown > 0) {
-            console.log(this.shieldRegenCooldown);
-            this.shieldRegenCooldown -= delta;
-        }
+        if (this.shieldHealth < playerConfigs.maxShieldHealth && this.shieldRegenCooldown > 0) this.shieldRegenCooldown -= delta;
         if (this.shieldRegenCooldown <= 0) {
-            console.log("shield regenerated!");
             this.shieldHealth++;
             this.shieldBar[this.shieldHealth - 1].visible = true;
             if (this.shieldHealth > 1) this.shieldSprites[this.shieldHealth - 2].visible = false;

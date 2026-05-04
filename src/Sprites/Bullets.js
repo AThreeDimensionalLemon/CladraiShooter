@@ -8,6 +8,7 @@ class Bullet extends Phaser.GameObjects.Sprite {
     }
 
     getIsColliding(target) {
+        console.log("bullet hit something");
         let leftEdge = function(thing) { return thing.x - thing.width / 2; };
         let rightEdge = function(thing) { return thing.x + thing.width / 2; };
         let topEdge = function(thing) { return thing.y - thing.height / 2; };
