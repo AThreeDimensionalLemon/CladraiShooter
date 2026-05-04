@@ -24,7 +24,7 @@ class PlayField extends Phaser.Scene {
     }
 
     preload() {
-        this.load.setPath("./assets");
+        this.load.setPath("./assets/textures");
         this.load.image("Damage_1");
         this.load.image("Damage_2");
         this.load.image("Health_Hull");
@@ -41,6 +41,15 @@ class PlayField extends Phaser.Scene {
         this.load.image("Ship_Runner");
         this.load.image("Ship_Wall");
 
+        this.load.setPath("./assets/sounds");
+        this.load.audio("DamageHull", "DamageHull.ogg");
+        this.load.audio("Death_Enemy", "Death_Enemy.ogg");
+        this.load.audio("Laser_Enemy", "Laser_Enemy.ogg");
+        this.load.audio("Laser_Player", "Laser_Player.ogg");
+        this.load.audio("Shield_Down", "Shield_Down.ogg");
+        this.load.audio("Shield_Up", "Shield_Up.ogg");
+
+        this.load.setPath("./assets");
         this.load.json("Levels");
     }
 

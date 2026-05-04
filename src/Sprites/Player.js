@@ -24,6 +24,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
         //bullets
         this.bullets = [];
+        this.bulletSound = scene.sound.add("Laser_Player");
 
         //health
         //hull
@@ -41,6 +42,7 @@ class Player extends Phaser.GameObjects.Sprite {
             hullSprite.setDepth(1);
             hullSprite.visible = false;
         }
+        this.hullDamageSound = scene.sound.add("DamageHull");
 
         //shield
         this.shieldBar = [];
@@ -61,6 +63,8 @@ class Player extends Phaser.GameObjects.Sprite {
             shieldSprite.visible = false;
         }
         this.shieldSprites[2].visible = true;
+        this.shieldDownSound = scene.sound.add("Shield_Down");
+        this.shieldUpSound = scene.sound.add("Shield_Up");
 
         //other stuff
         this.scene = scene;
@@ -79,10 +83,12 @@ class Player extends Phaser.GameObjects.Sprite {
             this.shieldBar[this.shieldHealth].visible = false;
             this.shieldSprites[this.shieldHealth].visible = false;
             if (!this.shieldHealth <= 0) this.shieldSprites[this.shieldHealth - 1].visible = true;
+            else this.shieldDownSound.play();
         }
         else {
             this.hullHealth--;
             this.hullBar[this.hullHealth].visible = false;
+            this.hullDamageSound.play();
             if (this.hullHealth > 0) this.hullSprites[this.hullHealth - 1].visible = true;
             else console.log("player death");
         }
@@ -111,6 +117,7 @@ class Player extends Phaser.GameObjects.Sprite {
                 }
             }
             if (!hasInactive) this.bullets.push(new PlayerBullet(this.scene, this.x, this.y - this.height / 2));
+            this.bulletSound.play();
             this.laserCooldown = playerConfigs.laserCooldown;
         }
 
@@ -132,6 +139,7 @@ class Player extends Phaser.GameObjects.Sprite {
             if (this.shieldHealth > 1) this.shieldSprites[this.shieldHealth - 2].visible = false;
             this.shieldSprites[this.shieldHealth - 1].visible = true;
             this.shieldRegenCooldown = playerConfigs.shieldRegenCooldown;
+            this.shieldUpSound.play();
         }
 
         this.laserCooldown -= delta;

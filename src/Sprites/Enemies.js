@@ -2,9 +2,14 @@ class Enemy extends Phaser.GameObjects.PathFollower {
     constructor(scene, path, texture, pathConfig) {
         super(scene, path, path.getStartPoint().x, path.getStartPoint().y, texture);
         this.pathConfig = pathConfig;
+
         this.firingCooldown = 500 + Math.random() * 2500;
         this.bullets = [];
+        this.bulletSound = scene.sound.add("Laser_Enemy");
+
         this.destroyRequested = false;
+        this.deathSound = scene.sound.add("Death_Enemy");
+
         scene.add.existing(this);
         return this;
     }
@@ -15,6 +20,7 @@ class Enemy extends Phaser.GameObjects.PathFollower {
 
     damage() {
         this.destroyRequested = true;
+        this.deathSound.play();
     }
 
     fireBullet() {
@@ -33,6 +39,7 @@ class Enemy extends Phaser.GameObjects.PathFollower {
             }
         }
         if (!hasInactive) this.bullets.push(new EnemyBullet(this.scene, this.x, this.y + this.height / 2, this.rotation));
+        this.bulletSound.play();
     }
 
     updateFiring(delta) {
